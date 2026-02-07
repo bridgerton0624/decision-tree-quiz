@@ -8,40 +8,49 @@
 </head>
 <body>
     <div id="hearts-container"></div>
+   
     <div id="popup" class="popup">
         <div class="popup-content">
             <h2>💕 Let me show you your best decision</h2>
             <button class="popup-btn" onclick="closePopup()">Let's Go! 💘</button>
         </div>
     </div>
-    <div id="page1" class="page active">
+    
+    <!-- Page 1: Valentine Question -->
+    <div id="page1" class="page active" style="background-image: url('https://images.unsplash.com/photo-1518895949257-7621c3c786d7?w=1200&h=800&fit=crop');">
+        <div class="page-overlay"></div>
         <div class="container">
-            <h1>💕 Will you be my forever valentine? 💕</h1>
+            <h1 class="title-animation">💕 Will you be my forever valentine? 💕</h1>
             <div class="buttons-container">
-                <button class="btn yes-btn" onclick="selectYes()">YES! 💕</button>
+                <button class="btn yes-btn" id="yesBtn" onclick="selectYes()">YES! 💕</button>
                 <button class="btn no-btn" id="noBtn" onmouseover="moveNoButton()" onclick="handleNoClick()">NO</button>
             </div>
         </div>
     </div>
-    <div id="page2" class="page">
+
+<!-- Page 2: Choices -->
+    <div id="page2" class="page" style="background-image: url('https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&h=800&fit=crop');">
+        <div class="page-overlay"></div>
         <div class="container">
-            <h1>💕 Choose Your Favorite 💕</h1>
+            <h1 class="title-animation">💕 Choose Your Favorite 💕</h1>
             <div class="choices-container">
-                <button class="choice-btn" onclick="selectChoice('kiss')">
+                <button class="choice-btn kiss-animation" onclick="selectChoice('kiss')">
                     <span class="emoji">💋</span>
                     <span class="text">Kiss Me</span>
                 </button>
-                <button class="choice-btn" onclick="selectChoice('date')">
+                <button class="choice-btn date-animation" onclick="selectChoice('date')">
                     <span class="emoji">🌹</span>
                     <span class="text">Take me on a Date</span>
                 </button>
-                <button class="choice-btn" onclick="selectChoice('shopping')">
+                <button class="choice-btn shopping-animation" onclick="selectChoice('shopping')">
                     <span class="emoji">🛍️</span>
                     <span class="text">Take me Shopping</span>
                 </button>
             </div>
         </div>
     </div>
+
+    
       <!-- Audio Players -->
     <audio id="loveAudio" src="I_Think_They_Call_This_Love_Cover.mp3"></audio>
     <audio id="backgroundMusic" src="I_Think_They_Call_This_Love_Cover.mp3" loop></audio>
