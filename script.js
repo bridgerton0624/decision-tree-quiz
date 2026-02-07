@@ -1,96 +1,119 @@
 // script.js - Enhanced version
 
-// Fixed 10-second timer pop-up that displays properly
-let timer;
-let timerDisplay = document.getElementById('timerDisplay');
-function startTimer(duration) {
-    let time = duration, seconds;
-    timer = setInterval(function () {
-        seconds = parseInt(time % 60, 10);
-        seconds = seconds < 10 ? "0" + seconds : seconds;
+document.addEventListener("DOMContentLoaded", () => {
 
-        timerDisplay.textContent = seconds;
+    /* =========================
+       ELEMENT REFERENCES
+    ========================== */
+    const page1 = document.getElementById("page1");
+    const page2 = document.getElementById("page2");
+    const popup = document.getElementById("popup");
+    const countdownPopup = document.getElementById("countdownPopup");
+    const timerDisplay = document.getElementById("timerDisplay");
 
-        if (--time < 0) {
-            clearInterval(timer);
-            // Add logic for pop-up here
-        }
-    }, 1000);
-}
+    const yesBtn = document.getElementById("yesBtn");
+    const noBtn = document.getElementById("noBtn");
 
-// Music player controls (play, pause, replay functionality)
-let music = new Audio('background-music.mp3');
-function playMusic() {
-    music.play();
-}
-function pauseMusic() {
-    music.pause();
-}
-function replayMusic() {
-    music.currentTime = 0;
-    music.play();
-}
+    const bgMusic = document.getElementById("backgroundMusic");
 
-// Confetti animation when clicking Yes
-function showConfetti() {
-    const confetti = document.createElement('div');
-    confetti.classList.add('confetti');
-    document.body.appendChild(confetti);
-    // Add confetti animation logic here
-}
+    let noHoverCount = 0;
+    let timer;
+    let timeLeft = 10;
 
-// Sparkle sound effects for button clicks
-function playClickSound() {
-    let clickSound = new Audio('click-sound.mp3');
-    clickSound.play();
-}
+    /* =========================
+       POPUP
+    ========================== */
+    window.closePopup = function () {
+        popup.classList.add("hidden");
+        startTimer();
+    };
 
-// Different animations for each choice (kiss, date, shopping)
-function chooseOption(option) {
-    switch(option) {
-        case 'kiss':
-            // Add kiss animation logic
-            break;
-        case 'date':
-            // Add date animation logic
-            break;
-        case 'shopping':
-            // Add shopping animation logic
-            break;
+    /* =========================
+       TIMER
+    ========================== */
+    function startTimer() {
+        countdownPopup.classList.remove("hidden");
+        timerDisplay.textContent = timeLeft;
+
+        timer = setInterval(() => {
+            timeLeft--;
+            timerDisplay.textContent = timeLeft;
+
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+            }
+        }, 1000);
     }
-}
 
-// Particle effects with hearts
-function generateHearts() {
-    const heart = document.createElement('div');
-    heart.classList.add('heart');
-    document.body.appendChild(heart);
-    // Add particle effect logic here
-}
+    /* =========================
+       YES BUTTON
+    ========================== */
+    window.selectYes = function () {
+        clearInterval(timer);
+        countdownPopup.classList.add("hidden");
 
-// Smooth page transitions with fade animations
-function fadeOut() {
-    document.body.classList.add('fade-out');
-}
-function fadeIn() {
-    document.body.classList.remove('fade-out');
-}
+        // Play music ONLY after click (browser rule)
+        bgMusic.play();
 
-// Background music on page load
-window.onload = function() {
-    playMusic();
-    startTimer(10);
-};
+        // Confetti 🎉
+        confetti({
+            particleCount: 150,
+            spread: 90,
+            origin: { y: 0.6 }
+        });
 
-// Sound effects integrated throughout
-document.querySelectorAll('.button').forEach(button => {
-    button.addEventListener('click', function() {
-        playClickSound();
-        // Additional click handling logic
-    });
-});
+        // Switch page
+        page1.classList.remove("active");
+        page2.classList.add("active");
+    };
 
-// Better mobile interaction handling
-window.addEventListener('touchstart', function(e) {
-    // Handle touch interactions
+    /* =========================
+       NO BUTTON BEHAVIOR
+    ========================== */
+    window.moveNoButton = function () {
+        noHoverCount++;
+
+        const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+        const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+
+        noBtn.style.position = "absolute";
+        noBtn.style.left = ${x}px;
+        noBtn.style.top = ${y}px;
+
+        // Shrink each time 😈
+        const scale = Math.max(0.5, 1 - noHoverCount * 0.05);
+        noBtn.style.transform = scale(${scale});
+    };
+
+    window.handleNoClick = function () {
+        alert("Are you 100% sure? 😏");
+    };
+
+    /* =========================
+       CHOICES
+    ========================== */
+    window.selectChoice = function (choice) {
+        if (choice === "kiss") {
+            alert("💋 Come hereee!");
+        } else if (choice === "date") {
+            alert("🌹 Dinner, movie & dessert planned!");
+        } else {
+            alert("🛍️ Wallet crying already 😂");
+        }
+    };
+
+    /* =========================
+       FLOATING HEARTS
+    ========================== */
+    setInterval(() => {
+        const heart = document.createElement("div");
+        heart.className = "heart";
+        heart.innerText = "💖";
+        heart.style.left = Math.random() * 100 + "vw";
+        heart.style.animationDuration = 5 + Math.random() * 5 + "s";
+        document.getElementById("hearts-container").appendChild(heart);
+
+        setTimeout(() => heart.remove(), 10000);
+    }, 500);
+
 });
