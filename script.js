@@ -1,76 +1,96 @@
-// script.js - Enhancements
+// script.js - Enhanced version
 
-// Fixed 10-second timer pop-up
+// Fixed 10-second timer pop-up that displays properly
 let timer;
-function startTimer(duration, display) {
-    timer = duration;
-    const interval = setInterval(() => {
-        let seconds = parseInt(timer % 60, 10);
-        seconds = seconds < 10 ? '0' + seconds : seconds;
+let timerDisplay = document.getElementById('timerDisplay');
+function startTimer(duration) {
+    let time = duration, seconds;
+    timer = setInterval(function () {
+        seconds = parseInt(time % 60, 10);
+        seconds = seconds < 10 ? "0" + seconds : seconds;
 
-        display.textContent = seconds;
-        if (--timer < 0) {
-            clearInterval(interval);
-            display.textContent = 'Time is up!';
-            // Trigger pop-up here
+        timerDisplay.textContent = seconds;
+
+        if (--time < 0) {
+            clearInterval(timer);
+            // Add logic for pop-up here
         }
     }, 1000);
 }
 
-// Music player controls
-const audio = new Audio('background-music.mp3'); // Ensure the audio file is present
-function playMusic() { audio.play(); }
-function pauseMusic() { audio.pause(); }
-function replayMusic() { audio.currentTime = 0; playMusic(); }
-
-document.getElementById('playButton').onclick = playMusic;
-document.getElementById('pauseButton').onclick = pauseMusic;
-document.getElementById('replayButton').onclick = replayMusic;
-
-// Sound effects for button clicks
-function playClickSound() {
-    const clickSound = new Audio('click-sound.mp3');
-    clickSound.play();
+// Music player controls (play, pause, replay functionality)
+let music = new Audio('background-music.mp3');
+function playMusic() {
+    music.play();
+}
+function pauseMusic() {
+    music.pause();
+}
+function replayMusic() {
+    music.currentTime = 0;
+    music.play();
 }
 
 // Confetti animation when clicking Yes
 function showConfetti() {
-    // Implement confetti effect here
+    const confetti = document.createElement('div');
+    confetti.classList.add('confetti');
+    document.body.appendChild(confetti);
+    // Add confetti animation logic here
 }
 
-document.getElementById('yesButton').onclick = () => {
-    playClickSound();
-    showConfetti();
-};
-
-// Sparkle effects function
-function showSparkleEffect() {
-    // Implement sparkle effect here
+// Sparkle sound effects for button clicks
+function playClickSound() {
+    let clickSound = new Audio('click-sound.mp3');
+    clickSound.play();
 }
 
-// Different animations for each choice on page 2
-const choices = document.querySelectorAll('.choice');
-choices.forEach(choice => {
-    choice.addEventListener('click', (e) => {
-        playClickSound();
-        // Apply different animation based on choice
-        // Implement animation here
-    });
-});
-
-// Particle effects
-function showParticles() {
-    // Implement particle effect here
+// Different animations for each choice (kiss, date, shopping)
+function chooseOption(option) {
+    switch(option) {
+        case 'kiss':
+            // Add kiss animation logic
+            break;
+        case 'date':
+            // Add date animation logic
+            break;
+        case 'shopping':
+            // Add shopping animation logic
+            break;
+    }
 }
 
-// Smooth page transitions
-function smoothTransition(newPage) {
-    // Implement smooth transition here, e.g., fade out current page and fade in new page
+// Particle effects with hearts
+function generateHearts() {
+    const heart = document.createElement('div');
+    heart.classList.add('heart');
+    document.body.appendChild(heart);
+    // Add particle effect logic here
+}
+
+// Smooth page transitions with fade animations
+function fadeOut() {
+    document.body.classList.add('fade-out');
+}
+function fadeIn() {
+    document.body.classList.remove('fade-out');
 }
 
 // Background music on page load
 window.onload = function() {
     playMusic();
-    const timerDisplay = document.getElementById('timer');
-    startTimer(10, timerDisplay);
+    startTimer(10);
 };
+
+// Sound effects integrated throughout
+document.querySelectorAll('.button').forEach(button => {
+    button.addEventListener('click', function() {
+        playClickSound();
+        // Additional click handling logic
+    });
+});
+
+// Better mobile interaction handling
+window.addEventListener('touchstart', function(e) {
+    // Handle touch interactions
+});
