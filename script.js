@@ -2,7 +2,9 @@
 function closePopup() {
     document.getElementById('popup').classList.add('hidden');
     generateHearts();
+    playBackgroundMusic();
 }
+
 
 // Generate floating hearts
 function generateHearts() {
@@ -19,6 +21,53 @@ function generateHearts() {
         setTimeout(() => heart.remove(), 8000);
     }, 300);
 }
+
+// Music Player Functions
+function playBackgroundMusic() {
+    const bgMusic = document.getElementById('backgroundMusic');
+    bgMusic.volume = 0.3;
+    bgMusic.play().catch(error => console.log('Background music play error:', error));
+}
+
+document.getElementById('playButton').addEventListener('click', function() {
+    const bgMusic = document.getElementById('backgroundMusic');
+    bgMusic.play().catch(error => console.log('Play error:', error));
+    playClickSound();
+});
+
+document.getElementById('pauseButton').addEventListener('click', function() {
+    const bgMusic = document.getElementById('backgroundMusic');
+    bgMusic.pause();
+    playClickSound();
+});
+
+document.getElementById('replayButton').addEventListener('click', function() {
+    const bgMusic = document.getElementById('backgroundMusic');
+    bgMusic.currentTime = 0;
+    bgMusic.play().catch(error => console.log('Replay error:', error));
+    playClickSound();
+});
+
+// Play Click Sound Effect (Sparkle Sound)
+function playClickSound() {
+    // Create a simple beep sound using Web Audio API
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = audioContext.createOscillator();
+    const gain = audioContext.createGain();
+    
+    oscillator.connect(gain);
+    gain.connect(audioContext.destination);
+    
+    oscillator.frequency.value = 800;
+    oscillator.type = 'sine';
+    
+    gain.gain.setValueAtTime(0.3, audioContext.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+    
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + 0.1);
+}
+
 
 // Move No button away from mouse
 let noClickCount = 0;
@@ -41,11 +90,15 @@ function handleNoClick() {
     const currentSize = parseFloat(window.getComputedStyle(noBtn).fontSize);
     noBtn.style.fontSize = (currentSize * 0.85) + 'px';
     
+    playClickSound();
+    
     if (!countdownStarted) {
         countdownStarted = true;
         startCountdown();
     }
 }
+
+
 
 // Countdown timer
 function startCountdown() {
@@ -66,15 +119,20 @@ function startCountdown() {
     }, 1000);
 }
 
-// Select Yes
+// Select Yes - with Confetti
 function selectYes() {
+    playClickSound();
+    
+    // Play main love song
     const audio = document.getElementById('loveAudio');
+    audio.currentTime = 0;
     audio.play().catch(error => console.log('Audio play error:', error));
     
-    document.getElementById('countdownPopup').classList.add('hidden');
+    // Trigger Confetti
+    showConfetti();
     
-    movePage(2);
-}
+    // Close countdown if active
+    document.getElementById('countdownPopup').classList.add('hidden');
 
 // Music player controls
 const audio = new Audio('background-music.mp3'); // Ensure the audio file is present
@@ -92,19 +150,44 @@ function playClickSound() {
     clickSound.play();
 }
 
-// Select choice on page 2
+// Select choice on page 2 with different animations
 function selectChoice(choice) {
-    console.log('You selected:', choice);
+    playClickSound();
+    
+    let message = '';
     if (choice === 'kiss') {
-        alert('💋 Kiss me! How romantic! 💕');
+        message = '💋 Kiss me! How romantic! 💕';
+        triggerChoiceAnimation('kiss');
     } else if (choice === 'date') {
-        alert('🌹 A romantic date! How wonderful! 💕');
+        message = '🌹 A romantic date! How wonderful! 💕';
+        triggerChoiceAnimation('date');
     } else if (choice === 'shopping') {
-        alert('🛍️ Shopping time! How fun! 💕');
+        message = '🛍️ Shopping time! How fun! 💕';
+        triggerChoiceAnimation('shopping');
+    }
+    
+    // Show result with confetti
+    showConfetti();
+    alert(message);
+}
+
+function triggerChoiceAnimation(choice) {
+    const btn = document.querySelector(`.${choice}-animation`);
+    if (btn) {
+        btn.style.animation = 'none';
+        setTimeout(() => {
+            if (choice === 'kiss') {
+                btn.style.animation = 'kissAnimation 0.6s ease-in-out';
+            } else if (choice === 'date') {
+                btn.style.animation = 'rotateAnimation 0.6s ease-in-out';
+            } else if (choice === 'shopping') {
+                btn.style.animation = 'swingAnimation 0.6s ease-in-out';
+            }
+        }, 10);
     }
 }
 
-// Move between pages
+// Move between pages with smooth transition
 function movePage(pageNumber) {
     document.querySelectorAll('.page').forEach(page => {
         page.classList.remove('active');
@@ -112,3 +195,8 @@ function movePage(pageNumber) {
     
     document.getElementById('page' + pageNumber).classList.add('active');
 }
+
+// Initialize on page load
+window.addEventListener('load', function() {
+    generateHearts();
+});
