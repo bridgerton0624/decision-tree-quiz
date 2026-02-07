@@ -1,5 +1,6 @@
 // script.js - Enhanced version
 
+
 document.addEventListener("DOMContentLoaded", () => {
 
     /* =========================
@@ -8,6 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const page1 = document.getElementById("page1");
     const page2 = document.getElementById("page2");
     const popup = document.getElementById("popup");
+    const popupBtn = document.querySelector(".popup-btn");
     const countdownPopup = document.getElementById("countdownPopup");
     const timerDisplay = document.getElementById("timerDisplay");
 
@@ -15,18 +17,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const noBtn = document.getElementById("noBtn");
 
     const bgMusic = document.getElementById("backgroundMusic");
+    const heartsContainer = document.getElementById("hearts-container");
 
     let noHoverCount = 0;
     let timer;
     let timeLeft = 10;
 
     /* =========================
-       POPUP
+       POPUP FIX (Let’s Go button)
     ========================== */
-    window.closePopup = function () {
+    popupBtn.addEventListener("click", () => {
         popup.classList.add("hidden");
         startTimer();
-    };
+    });
 
     /* =========================
        TIMER
@@ -52,23 +55,23 @@ document.addEventListener("DOMContentLoaded", () => {
         clearInterval(timer);
         countdownPopup.classList.add("hidden");
 
-        // Play music ONLY after click (browser rule)
-        bgMusic.play();
+        // Start music ONLY after user interaction (browser rule)
+        bgMusic.play().catch(() => {});
 
         // Confetti 🎉
         confetti({
-            particleCount: 150,
-            spread: 90,
+            particleCount: 180,
+            spread: 100,
             origin: { y: 0.6 }
         });
 
-        // Switch page
+        // Switch pages
         page1.classList.remove("active");
         page2.classList.add("active");
     };
 
     /* =========================
-       NO BUTTON BEHAVIOR
+       NO BUTTON LOGIC
     ========================== */
     window.moveNoButton = function () {
         noHoverCount++;
@@ -80,8 +83,8 @@ document.addEventListener("DOMContentLoaded", () => {
         noBtn.style.left = ${x}px;
         noBtn.style.top = ${y}px;
 
-        // Shrink each time 😈
-        const scale = Math.max(0.5, 1 - noHoverCount * 0.05);
+        // Shrink each hover 😈
+        const scale = Math.max(0.5, 1 - noHoverCount * 0.06);
         noBtn.style.transform = scale(${scale});
     };
 
@@ -90,15 +93,17 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     /* =========================
-       CHOICES
+       CHOICE BUTTONS
     ========================== */
     window.selectChoice = function (choice) {
         if (choice === "kiss") {
-            alert("💋 Come hereee!");
-        } else if (choice === "date") {
-            alert("🌹 Dinner, movie & dessert planned!");
-        } else {
-            alert("🛍️ Wallet crying already 😂");
+            alert("💋 Come here… this was inevitable 😘");
+        } 
+        else if (choice === "date") {
+            alert("🌹 Date locked in! Dinner, dessert & cuddles 💕");
+        } 
+        else {
+            alert("🛍️ Shopping spree unlocked! Wallet crying already 😂");
         }
     };
 
@@ -108,12 +113,12 @@ document.addEventListener("DOMContentLoaded", () => {
     setInterval(() => {
         const heart = document.createElement("div");
         heart.className = "heart";
-        heart.innerText = "💖";
+        heart.textContent = "💖";
         heart.style.left = Math.random() * 100 + "vw";
         heart.style.animationDuration = 5 + Math.random() * 5 + "s";
-        document.getElementById("hearts-container").appendChild(heart);
+        heartsContainer.appendChild(heart);
 
         setTimeout(() => heart.remove(), 10000);
-    }, 500);
+    }, 600);
 
 });
